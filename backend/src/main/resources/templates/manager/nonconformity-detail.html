@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Non-Conformity Detail - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #333; color: white; }
+        select, input, textarea { width: 100%; padding: 8px; margin: 5px 0; }
+        button { padding: 8px 15px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .btn-success { background: #28a745; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/manager/nonconformities">Non-Conformities</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Non-Conformity #<span th:text="${nc.id}"></span></h1>
+    <div th:if="${message}" style="color: green;" th:text="${message}"></div>
+    <div th:if="${error}" style="color: red;" th:text="${error}"></div>
+    
+    <div>
+        <strong>Audit:</strong> <span th:text="${nc.audit.facility.name}"></span><br/>
+        <strong>Item:</strong> <span th:text="${nc.item.questionText}"></span><br/>
+        <strong>Severity:</strong> <span th:text="${nc.severity}"></span><br/>
+        <strong>Status:</strong> <span th:text="${nc.status}"></span><br/>
+        <strong>Description:</strong> <span th:text="${nc.description}"></span>
+    </div>
+
+    <h2>Update Status</h2>
+    <form th:action="@{/manager/nonconformities/{id}/status(id=${nc.id})}" method="post">
+        <select id="nc-status" name="status">
+            <option th:each="status : ${statuses}" 
+                    th:value="${status}" 
+                    th:selected="${status == nc.status}"
+                    th:text="${status}"></option>
+        </select>
+        <button type="submit" id="update-status">Update Status</button>
+    </form>
+
+    <h2>Corrective Actions</h2>
+    <table th:if="${!correctiveActions.isEmpty()}">
+        <tr>
+            <th>Owner</th>
+            <th>Due Date</th>
+            <th>Action</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="ca : ${correctiveActions}">
+            <td th:text="${ca.ownerName}"></td>
+            <td th:text="${#temporals.format(ca.dueDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${ca.actionText}"></td>
+            <td th:text="${ca.status}"></td>
+            <td>
+                <form th:if="${ca.status != 'DONE'}" 
+                      th:action="@{/manager/corrective-actions/{id}/done(id=${ca.id})}" 
+                      method="post" style="display:inline;">
+                    <button type="submit" class="btn-success">Mark as DONE</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <h3>Create New Corrective Action</h3>
+    <form th:action="@{/manager/corrective-actions}" th:object="${caDTO}" method="post">
+        <input type="hidden" th:field="*{nonConformityId}" th:value="${nc.id}"/>
+        <div>
+            <label>Owner Name:</label>
+            <input type="text" id="ca-owner-name" th:field="*{ownerName}" required/>
+        </div>
+        <div>
+            <label>Due Date:</label>
+            <input type="date" id="ca-due-date" th:field="*{dueDate}" required/>
+        </div>
+        <div>
+            <label>Action Text:</label>
+            <textarea id="ca-action-text" th:field="*{actionText}" rows="4" required></textarea>
+        </div>
+        <div>
+            <button type="submit" id="submit">Create Corrective Action</button>
+        </div>
+    </form>
+
+    <p><a href="/manager/nonconformities">Back to Non-Conformities</a></p>
+</body>
+</html>

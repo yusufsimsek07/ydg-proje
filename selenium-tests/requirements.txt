@@ -1,0 +1,4 @@
+selenium==4.15.2
+pytest==7.4.3
+pytest-order==1.2.0
+requests==2.31.0

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Non-Conformities - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #333; color: white; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/manager/nonconformities">Non-Conformities</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Non-Conformities</h1>
+    <div th:if="${message}" style="color: green;" th:text="${message}"></div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Audit</th>
+            <th>Item</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="nc : ${nonConformities}">
+            <td th:text="${nc.id}"></td>
+            <td th:text="${nc.audit.facility.name} + ' - ' + ${#temporals.format(nc.audit.auditDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${nc.item.questionText}"></td>
+            <td th:text="${nc.severity}"></td>
+            <td th:text="${nc.status}"></td>
+            <td>
+                <a th:href="@{/manager/nonconformities/{id}(id=${nc.id})}">View</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

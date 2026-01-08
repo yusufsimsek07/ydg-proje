@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Facilities - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #333; color: white; }
+        a { margin: 0 5px; }
+        .btn { padding: 8px 15px; background: #28a745; color: white; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auditor/facilities">Facilities</a>
+        <a href="/auditor/audits">Audits</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Facilities</h1>
+    <div th:if="${message}" style="color: green;" th:text="${message}"></div>
+    <p><a href="/auditor/facilities/new" class="btn">Create New Facility</a></p>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Contact</th>
+        </tr>
+        <tr th:each="facility : ${facilities}">
+            <td th:text="${facility.id}"></td>
+            <td th:text="${facility.name}"></td>
+            <td th:text="${facility.address}"></td>
+            <td th:text="${facility.city}"></td>
+            <td th:text="${facility.contactName} + ' - ' + ${facility.contactPhone}"></td>
+        </tr>
+    </table>
+</body>
+</html>

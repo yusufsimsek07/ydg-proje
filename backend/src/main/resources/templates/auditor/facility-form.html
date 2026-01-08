@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Facility - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; }
+        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auditor/facilities">Facilities</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Create New Facility</h1>
+    <form th:action="@{/auditor/facilities}" th:object="${facility}" method="post">
+        <div>
+            <label>Name:</label>
+            <input type="text" id="facility-name" th:field="*{name}" required/>
+        </div>
+        <div>
+            <label>Address:</label>
+            <input type="text" id="facility-address" th:field="*{address}"/>
+        </div>
+        <div>
+            <label>City:</label>
+            <input type="text" id="facility-city" th:field="*{city}"/>
+        </div>
+        <div>
+            <label>Contact Name:</label>
+            <input type="text" id="facility-contact-name" th:field="*{contactName}"/>
+        </div>
+        <div>
+            <label>Contact Phone:</label>
+            <input type="text" id="facility-contact-phone" th:field="*{contactPhone}"/>
+        </div>
+        <div>
+            <button type="submit" id="submit">Create Facility</button>
+        </div>
+    </form>
+    <p><a href="/auditor/facilities">Back to Facilities</a></p>
+</body>
+</html>

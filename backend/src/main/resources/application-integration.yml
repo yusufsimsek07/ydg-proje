@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: ${TEST_DATASOURCE_URL}
+    username: ${TEST_DATASOURCE_USERNAME:test}
+    password: ${TEST_DATASOURCE_PASSWORD:test}
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

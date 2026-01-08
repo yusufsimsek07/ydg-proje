@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Audits - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #333; color: white; }
+        .btn { padding: 8px 15px; background: #28a745; color: white; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auditor/facilities">Facilities</a>
+        <a href="/auditor/audits">Audits</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Audits</h1>
+    <div th:if="${message}" style="color: green;" th:text="${message}"></div>
+    <p><a href="/auditor/audits/new" class="btn">Create New Audit</a></p>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Facility</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="audit : ${audits}">
+            <td th:text="${audit.id}"></td>
+            <td th:text="${audit.facility.name}"></td>
+            <td th:text="${#temporals.format(audit.auditDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${audit.status}"></td>
+            <td>
+                <a th:href="@{/auditor/audits/{id}(id=${audit.id})}">View</a>
+                <a th:href="@{/reports/audits/{id}(id=${audit.id})}">Report</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

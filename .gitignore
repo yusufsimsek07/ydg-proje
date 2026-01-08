@@ -1,0 +1,38 @@
+# Maven
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/.mvn/wrapper/maven-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Python
+selenium-tests/__pycache__/
+selenium-tests/*.pyc
+selenium-tests/.pytest_cache/
+selenium-tests/selenium-reports/
+selenium-tests/.venv/
+selenium-tests/venv/
+
+# Docker
+docker-compose.override.yml
+
+# Test reports
+backend/target/surefire-reports/
+backend/target/failsafe-reports/

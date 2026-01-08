@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Audit Report - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #333; color: white; }
+        button { padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Audit Report #<span th:text="${audit.id}"></span></h1>
+    
+    <div>
+        <strong>Facility:</strong> <span th:text="${audit.facility.name}"></span><br/>
+        <strong>Date:</strong> <span th:text="${#temporals.format(audit.auditDate, 'yyyy-MM-dd')}"></span><br/>
+        <strong>Status:</strong> <span th:text="${audit.status}"></span>
+    </div>
+
+    <h2>Checklist Results</h2>
+    <table>
+        <tr>
+            <th>Section</th>
+            <th>Question</th>
+            <th>Result</th>
+            <th>Comment</th>
+        </tr>
+        <tr th:each="response : ${audit.responses}">
+            <td th:text="${response.item.section}"></td>
+            <td th:text="${response.item.questionText}"></td>
+            <td th:text="${response.result}"></td>
+            <td th:text="${response.comment}"></td>
+        </tr>
+    </table>
+
+    <h2>Non-Conformities</h2>
+    <table th:if="${!audit.nonConformities.isEmpty()}">
+        <tr>
+            <th>Item</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Description</th>
+        </tr>
+        <tr th:each="nc : ${audit.nonConformities}">
+            <td th:text="${nc.item.questionText}"></td>
+            <td th:text="${nc.severity}"></td>
+            <td th:text="${nc.status}"></td>
+            <td th:text="${nc.description}"></td>
+        </tr>
+    </table>
+    <p th:if="${audit.nonConformities.isEmpty()}">No non-conformities</p>
+
+    <h2>Corrective Actions</h2>
+    <table th:if="${audit.nonConformities.?[!correctiveActions.isEmpty()]}">
+        <tr>
+            <th>Non-Conformity</th>
+            <th>Owner</th>
+            <th>Due Date</th>
+            <th>Action</th>
+            <th>Status</th>
+        </tr>
+        <tr th:each="nc : ${audit.nonConformities}">
+            <th:block th:each="ca : ${nc.correctiveActions}">
+                <tr>
+                    <td th:text="${nc.item.questionText}"></td>
+                    <td th:text="${ca.ownerName}"></td>
+                    <td th:text="${#temporals.format(ca.dueDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${ca.actionText}"></td>
+                    <td th:text="${ca.status}"></td>
+                </tr>
+            </th:block>
+        </tr>
+    </table>
+    <p th:if="${audit.nonConformities.?[correctiveActions.isEmpty()]}">No corrective actions</p>
+
+    <p>
+        <a th:href="@{/reports/audits/{id}/export(id=${audit.id})}">
+            <button id="export-csv">Export CSV</button>
+        </a>
+    </p>
+    <p><a href="/auditor/audits">Back to Audits</a></p>
+</body>
+</html>

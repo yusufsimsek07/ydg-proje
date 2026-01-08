@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Dashboard - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        nav { background: #333; padding: 10px; }
+        nav a { color: white; margin: 0 10px; text-decoration: none; }
+        .content { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <span sec:authorize="hasRole('ADMIN')">
+            <a href="/admin/users">Users</a>
+        </span>
+        <span sec:authorize="hasAnyRole('AUDITOR', 'ADMIN')">
+            <a href="/auditor/facilities">Facilities</a>
+            <a href="/auditor/audits">Audits</a>
+        </span>
+        <span sec:authorize="hasAnyRole('MANAGER', 'ADMIN')">
+            <a href="/manager/nonconformities">Non-Conformities</a>
+        </span>
+        <a href="/logout">Logout</a>
+    </nav>
+    <div class="content">
+        <h1>Welcome, <span th:text="${username}"></span>!</h1>
+        <div sec:authorize="hasRole('ADMIN')">
+            <h2>Admin Functions</h2>
+            <p><a href="/admin/users">Manage Users</a></p>
+        </div>
+        <div sec:authorize="hasAnyRole('AUDITOR', 'ADMIN')">
+            <h2>Auditor Functions</h2>
+            <p><a href="/auditor/facilities">Manage Facilities</a></p>
+            <p><a href="/auditor/audits">View Audits</a></p>
+            <p><a href="/auditor/audits/new">Create New Audit</a></p>
+        </div>
+        <div sec:authorize="hasAnyRole('MANAGER', 'ADMIN')">
+            <h2>Manager Functions</h2>
+            <p><a href="/manager/nonconformities">Manage Non-Conformities</a></p>
+        </div>
+    </div>
+</body>
+</html>

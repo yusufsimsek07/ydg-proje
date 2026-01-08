@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Audit - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; }
+        select, input { width: 100%; padding: 8px; margin: 5px 0; }
+        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auditor/audits">Audits</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Create New Audit</h1>
+    <div th:if="${error}" style="color: red;" th:text="${error}"></div>
+    <form th:action="@{/auditor/audits}" th:object="${auditDTO}" method="post">
+        <div>
+            <label>Facility:</label>
+            <select id="audit-facility" th:field="*{facilityId}" required>
+                <option value="">Select Facility</option>
+                <option th:each="facility : ${facilities}" 
+                        th:value="${facility.id}" 
+                        th:text="${facility.name}"></option>
+            </select>
+        </div>
+        <div>
+            <label>Audit Date:</label>
+            <input type="date" id="audit-date" th:field="*{auditDate}" required/>
+        </div>
+        <div>
+            <button type="submit" id="submit">Create Audit</button>
+        </div>
+    </form>
+    <p><a href="/auditor/audits">Back to Audits</a></p>
+</body>
+</html>

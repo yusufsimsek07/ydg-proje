@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Non-Conformity - HACCP Audit Platform</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; }
+        select, textarea { width: 100%; padding: 8px; margin: 5px 0; }
+        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auditor/audits">Audits</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Create Non-Conformity</h1>
+    <form th:action="@{/auditor/nonconformities}" th:object="${ncDTO}" method="post">
+        <input type="hidden" th:field="*{auditId}"/>
+        <input type="hidden" th:field="*{itemId}"/>
+        <div>
+            <label>Severity:</label>
+            <select id="nc-severity" th:field="*{severity}" required>
+                <option value="LOW">LOW</option>
+                <option value="MEDIUM">MEDIUM</option>
+                <option value="HIGH">HIGH</option>
+                <option value="CRITICAL">CRITICAL</option>
+            </select>
+        </div>
+        <div>
+            <label>Description:</label>
+            <textarea id="nc-description" th:field="*{description}" rows="5" required></textarea>
+        </div>
+        <div>
+            <button type="submit" id="submit">Create Non-Conformity</button>
+        </div>
+    </form>
+    <p><a th:href="@{/auditor/audits/{id}(id=${audit.id})}">Back to Audit</a></p>
+</body>
+</html>

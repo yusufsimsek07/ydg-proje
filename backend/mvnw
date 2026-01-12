@@ -1,0 +1,3 @@
+#!/bin/sh
+BASEDIR=$(cd "$(dirname "$0")"; pwd -P)
+exec java -jar "$BASEDIR/.mvn/wrapper/maven-wrapper.jar" "$@"

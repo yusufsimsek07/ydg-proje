@@ -11,6 +11,7 @@ pipeline {
         stage('2-Build') {
             steps {
                 dir('backend') {
+                    chmod +x mvnw
                     sh './mvnw clean package -DskipTests'
                 }
             }
@@ -19,6 +20,7 @@ pipeline {
         stage('3-Unit Tests') {
             steps {
                 dir('backend') {
+                    chmod +x mvnw
                     sh './mvnw test'
                 }
             }

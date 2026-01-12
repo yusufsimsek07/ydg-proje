@@ -36,3 +36,7 @@ docker-compose.override.yml
 # Test reports
 backend/target/surefire-reports/
 backend/target/failsafe-reports/
+
+!backend/.mvn/
+!backend/.mvn/wrapper/**
+

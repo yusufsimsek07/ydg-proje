@@ -63,6 +63,7 @@ pipeline {
             steps {
                 sh '''
                     # Sadece backend, db ve chrome servislerini başlat/güncelle. Jenkins'i yeniden başlatma!
+                    docker compose build selenium
                     docker compose up -d --build backend db chrome
                     
                     echo "Waiting for backend to be healthy..."

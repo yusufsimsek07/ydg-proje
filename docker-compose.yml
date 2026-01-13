@@ -64,7 +64,6 @@ services:
       context: ./selenium-tests
       dockerfile: Dockerfile
     volumes:
-      - ./selenium-tests:/app
       - selenium_reports:/app/selenium-reports
     depends_on:
       - backend

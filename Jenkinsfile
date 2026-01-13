@@ -5,6 +5,11 @@ pipeline {
         timestamps()
     }
 
+    environment {
+        TESTCONTAINERS_RYUK_DISABLED = 'true'
+        TESTCONTAINERS_CHECKS_DISABLE = 'true'
+    }
+
     stages {
         stage('1-Checkout (GitHub)') {
             steps {

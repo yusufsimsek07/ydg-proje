@@ -14,13 +14,31 @@ def driver() -> WebDriver:
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
     
-    driver = webdriver.Remote(
-        command_executor="http://chrome:4444/wd/hub",
-        options=options
-    )
+    
+    # Retry logic for connecting to Chrome (container might take a few seconds to start)
+    import time
+    
+    driver = None
+    max_retries = 30
+    for i in range(max_retries):
+        try:
+            print(f"Attempting to connect to Chrome driver (attempt {i+1}/{max_retries})...")
+            driver = webdriver.Remote(
+                command_executor="http://chrome:4444/wd/hub",
+                options=options
+            )
+            print("Successfully connected to Chrome driver!")
+            break
+        except Exception as e:
+            print(f"Connection failed: {e}")
+            if i < max_retries - 1:
+                time.sleep(1)
+            else:
+                raise Exception("Could not connect to Chrome driver after multiple attempts") from e
     
     yield driver
-    driver.quit()
+    if driver:
+        driver.quit()
 
 
 @pytest.fixture

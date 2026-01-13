@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def driver() -> WebDriver:
     options = Options()
     options.add_argument("--headless")

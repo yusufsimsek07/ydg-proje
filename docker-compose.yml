@@ -56,7 +56,7 @@ services:
       - "4444:4444"
     environment:
       - SE_VNC_NO_PASSWORD=1
-    shm_size: 2gb
+    shm_size: 4gb
     # chrome healthcheck kaldırıldı (curl olmayabilir, patlar)
 
   selenium:

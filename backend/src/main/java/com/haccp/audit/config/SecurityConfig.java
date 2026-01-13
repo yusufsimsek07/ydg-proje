@@ -19,51 +19,42 @@ public class SecurityConfig {
     private UserService userService;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
             var user = userService.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-            
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
             return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPasswordHash())
-                .authorities(user.getRoles().stream()
-                    .map(role -> "ROLE_" + role.getName())
-                    .toArray(String[]::new))
-                .disabled(!user.getEnabled())
-                .build();
+                    .username(user.getUsername())
+                    .password(user.getPasswordHash())
+                    .authorities(user.getRoles().stream()
+                            .map(role -> "ROLE_" + role.getName())
+                            .toArray(String[]::new))
+                    .disabled(!user.getEnabled())
+                    .build();
         };
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/actuator/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/auditor/**").hasAnyRole("AUDITOR", "ADMIN")
-                .requestMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN")
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
-                .permitAll()
-            )
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/actuator/**")
-            );
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login", "/css/**", "/js/**", "/actuator/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/auditor/**").hasAnyRole("AUDITOR", "ADMIN")
+                        .requestMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN")
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/login?error=true")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
+                        .permitAll())
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/actuator/**"));
 
         return http.build();
     }

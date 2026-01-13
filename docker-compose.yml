@@ -2,14 +2,20 @@ version: "3.8"
 
 services:
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: ./jenkins
+      dockerfile: Dockerfile
     user: root
+    ports:
+      - "9090:8080"
+      - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - DOCKER_HOST=unix:///var/run/docker.sock
       - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+      - TESTCONTAINERS_RYUK_DISABLED=true
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -24,7 +30,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d haccp_audit"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d haccp_audit" ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -68,8 +74,9 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     # up sırasında test koşmasın; Jenkins stages "docker compose run --rm selenium ..." ile çalıştıracak
-    command: ["sleep", "infinity"]
+    command: [ "sleep", "infinity" ]
 
 volumes:
   postgres_data:
   selenium_reports:
+  jenkins_home:

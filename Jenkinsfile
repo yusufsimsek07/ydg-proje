@@ -16,6 +16,8 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'chmod +x mvnw'
+                    // Windows ortamından geliyorsa CRLF karakterlerini temizle
+                    sh "sed -i 's/\r\$//' mvnw"
                     sh './mvnw clean package -DskipTests'
                 }
             }
@@ -25,6 +27,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'chmod +x mvnw'
+                    sh "sed -i 's/\r\$//' mvnw"
                     sh './mvnw test'
                 }
             }
@@ -39,6 +42,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'chmod +x mvnw'
+                    sh "sed -i 's/\r\$//' mvnw"
                     // integration profile sende varsa çalışır; yoksa bu stage fail olabilir
                     sh './mvnw verify -Pintegration'
                 }
@@ -52,20 +56,23 @@ pipeline {
 
         stage('5-Run on Docker Containers') {
             steps {
-                sh 'docker compose up -d --build'
-
                 sh '''
+                    # Sadece backend, db ve chrome servislerini başlat/güncelle. Jenkins'i yeniden başlatma!
+                    docker compose up -d --build backend db chrome
+                    
                     echo "Waiting for backend to be healthy..."
                     timeout=120
                     elapsed=0
-                    until curl -fsS http://localhost:8080/actuator/health > /dev/null; do
+                    until curl -fsS http://host.docker.internal:8080/actuator/health > /dev/null; do
                       sleep 5
                       elapsed=$((elapsed+5))
                       if [ $elapsed -ge $timeout ]; then
                         echo "Backend health check timeout"
                         docker compose ps
+                        docker compose logs backend
                         exit 1
                       fi
+                      echo "Waiting... ($elapsed/$timeout sec)"
                     done
                     echo "Backend is healthy!"
                 '''

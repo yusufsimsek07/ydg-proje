@@ -5,9 +5,9 @@ INSERT INTO roles (name) VALUES ('MANAGER') ON CONFLICT (name) DO NOTHING;
 
 -- Insert users (passwords are bcrypt hashed: Admin123!, Auditor123!, Manager123!)
 INSERT INTO users (id, username, password_hash, full_name, enabled) VALUES
-(1, 'admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iwy7qK8O', 'Administrator', TRUE),
-(2, 'auditor', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iwy7qK8O', 'Auditor User', TRUE),
-(3, 'manager', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iwy7qK8O', 'Manager User', TRUE)
+(1, 'admin', '$2b$12$74gJ3mH42hPUL7QMKaxLTespyyKvZ6GxGQL6gZt0MCkZP.i7CxJFG', 'Administrator', TRUE),
+(2, 'auditor', '$2b$12$/bHFOs3XQgTTBMvigSDOgOkv5yKlJKWlGUanpCReO4Ud99b5CHOty', 'Auditor User', TRUE),
+(3, 'manager', '$2b$12$LfkOSUdsbKVGxrmzNs9mM.Sb7WOVTkj2xpULN2Im4qoXxVXixKPTS', 'Manager User', TRUE)
 ON CONFLICT (username) DO NOTHING;
 
 -- Insert user roles

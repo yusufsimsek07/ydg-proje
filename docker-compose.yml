@@ -26,7 +26,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_v2:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d haccp_audit" ]
       interval: 10s
@@ -74,6 +74,6 @@ services:
     command: [ "sleep", "infinity" ]
 
 volumes:
-  postgres_data:
+  postgres_data_v2:
   selenium_reports:
   jenkins_home:

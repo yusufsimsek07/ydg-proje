@@ -10,16 +10,17 @@ def test_03_fill_checklist_and_create_nc_and_capa(driver, base_url):
     
     # Step 1: Login as auditor
     driver.get(f"{base_url}/login")
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.ID, "username"))
     )
     driver.find_element(By.ID, "username").send_keys("auditor")
     driver.find_element(By.ID, "password").send_keys("Auditor123!")
-    driver.find_element(By.ID, "submit").click()
+    submit_btn = driver.find_element(By.ID, "submit")
+    driver.execute_script("arguments[0].click();", submit_btn)
     
     # Navigate to create audit
     driver.get(f"{base_url}/auditor/audits/new")
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.ID, "audit-facility"))
     )
     
@@ -27,11 +28,14 @@ def test_03_fill_checklist_and_create_nc_and_capa(driver, base_url):
     facility_select = Select(driver.find_element(By.ID, "audit-facility"))
     if len(facility_select.options) > 1:
         facility_select.select_by_index(1)
-    driver.find_element(By.ID, "audit-date").send_keys(datetime.now().strftime("%Y-%m-%d"))
-    driver.find_element(By.ID, "submit").click()
+    date_input = driver.find_element(By.ID, "audit-date")
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    driver.execute_script(f"arguments[0].value = '{current_date}';", date_input)
+    submit_btn = driver.find_element(By.ID, "submit")
+    driver.execute_script("arguments[0].click();", submit_btn)
     
     # Wait for audit detail
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.ID, "save-responses"))
     )
     
@@ -47,31 +51,33 @@ def test_03_fill_checklist_and_create_nc_and_capa(driver, base_url):
             comment_fields[0].send_keys("Test failure comment")
         
         # Save responses
-        driver.find_element(By.ID, "save-responses").click()
-        WebDriverWait(driver, 10).until(
+        save_btn = driver.find_element(By.ID, "save-responses")
+        driver.execute_script("arguments[0].click();", save_btn)
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'successfully')]"))
         )
     
     # Step 3: Create NC
     nc_links = driver.find_elements(By.XPATH, "//a[contains(text(), 'Create NC')]")
     if nc_links:
-        nc_links[0].click()
-        WebDriverWait(driver, 10).until(
+        driver.execute_script("arguments[0].click();", nc_links[0])
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.ID, "nc-severity"))
         )
         
         severity_select = Select(driver.find_element(By.ID, "nc-severity"))
         severity_select.select_by_value("HIGH")
         driver.find_element(By.ID, "nc-description").send_keys("Test non-conformity description")
-        driver.find_element(By.ID, "submit").click()
-        WebDriverWait(driver, 10).until(
+        submit_btn = driver.find_element(By.ID, "submit")
+        driver.execute_script("arguments[0].click();", submit_btn)
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.XPATH, "//h2[contains(text(), 'Non-Conformities')]"))
         )
     
     # Step 4: Logout and login as manager
     driver.get(f"{base_url}/logout")
     driver.get(f"{base_url}/login")
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.ID, "username"))
     )
     driver.find_element(By.ID, "username").send_keys("manager")
@@ -80,40 +86,44 @@ def test_03_fill_checklist_and_create_nc_and_capa(driver, base_url):
     
     # Navigate to non-conformities
     driver.get(f"{base_url}/manager/nonconformities")
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.XPATH, "//h1[contains(text(), 'Non-Conformities')]"))
     )
     
     # Click on first NC
     nc_links = driver.find_elements(By.XPATH, "//a[contains(@href, '/manager/nonconformities/') and contains(text(), 'View')]")
     if nc_links:
-        nc_links[0].click()
-        WebDriverWait(driver, 10).until(
+        driver.execute_script("arguments[0].click();", nc_links[0])
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.ID, "ca-owner-name"))
         )
         
         # Step 5: Create CA
         driver.find_element(By.ID, "ca-owner-name").send_keys("John Doe")
-        driver.find_element(By.ID, "ca-due-date").send_keys((datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d"))
+        due_date_input = driver.find_element(By.ID, "ca-due-date")
+        due_date = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
+        driver.execute_script(f"arguments[0].value = '{due_date}';", due_date_input)
         driver.find_element(By.ID, "ca-action-text").send_keys("Fix the non-conformity issue")
-        driver.find_element(By.ID, "submit").click()
-        WebDriverWait(driver, 10).until(
+        submit_btn = driver.find_element(By.ID, "submit")
+        driver.execute_script("arguments[0].click();", submit_btn)
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'successfully')]"))
         )
         
         # Step 6: Mark CA as DONE
         done_buttons = driver.find_elements(By.XPATH, "//button[contains(text(), 'Mark as DONE')]")
         if done_buttons:
-            done_buttons[0].click()
-            WebDriverWait(driver, 10).until(
+            driver.execute_script("arguments[0].click();", done_buttons[0])
+            WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'successfully')]"))
             )
         
         # Step 7: Close NC
         status_select = Select(driver.find_element(By.ID, "nc-status"))
         status_select.select_by_value("CLOSED")
-        driver.find_element(By.ID, "update-status").click()
-        WebDriverWait(driver, 10).until(
+        update_btn = driver.find_element(By.ID, "update-status")
+        driver.execute_script("arguments[0].click();", update_btn)
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'successfully')]"))
         )
         

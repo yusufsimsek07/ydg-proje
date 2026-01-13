@@ -11,6 +11,12 @@ RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-${D
   && tar xzvf docker.tgz --strip 1 -C /usr/local/bin docker/docker \
   && rm docker.tgz
 
+# Docker Compose Plugin kurulumu
+ENV DOCKER_COMPOSE_VERSION=2.24.5
+RUN mkdir -p /usr/local/lib/docker/cli-plugins \
+  && curl -SL https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose \
+  && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
 # Docker socket izinleri için grubu ayarla (Opsiyonel ama iyi)
 RUN groupadd -g 999 docker || true
 RUN usermod -aG docker jenkins

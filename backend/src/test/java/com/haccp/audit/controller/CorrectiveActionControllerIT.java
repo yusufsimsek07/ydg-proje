@@ -2,6 +2,7 @@ package com.haccp.audit.controller;
 
 import com.haccp.audit.entity.*;
 import com.haccp.audit.repository.*;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,9 @@ class CorrectiveActionControllerIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private NonConformity nc;
 
@@ -142,6 +146,9 @@ class CorrectiveActionControllerIT {
         ca = caRepository.findById(ca.getId()).orElseThrow();
         assertEquals(CorrectiveAction.CAStatus.DONE, ca.getStatus());
         assertNotNull(ca.getClosedAt());
+
+        entityManager.flush();
+        entityManager.clear();
 
         nc = ncRepository.findById(nc.getId()).orElseThrow();
         assertTrue(nc.getCorrectiveActions().stream()

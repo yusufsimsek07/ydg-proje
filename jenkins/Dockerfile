@@ -22,3 +22,4 @@ RUN groupadd -g 999 docker || true
 RUN usermod -aG docker jenkins
 
 USER jenkins
+RUN git config --global http.sslVerify false

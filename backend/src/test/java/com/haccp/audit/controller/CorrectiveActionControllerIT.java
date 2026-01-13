@@ -64,6 +64,9 @@ class CorrectiveActionControllerIT {
     @Autowired
     private CorrectiveActionRepository caRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private NonConformity nc;
 
     @BeforeEach
@@ -71,6 +74,12 @@ class CorrectiveActionControllerIT {
         Facility facility = new Facility();
         facility.setName("Test Facility");
         facility = facilityRepository.save(facility);
+
+        User manager = new User();
+        manager.setUsername("manager");
+        manager.setPasswordHash("password");
+        manager.setFullName("Test Manager");
+        manager = userRepository.save(manager);
 
         ChecklistTemplate template = new ChecklistTemplate();
         template.setName("Test Template");
@@ -88,6 +97,7 @@ class CorrectiveActionControllerIT {
         audit.setFacility(facility);
         audit.setAuditDate(LocalDate.now());
         audit.setStatus(Audit.AuditStatus.IN_PROGRESS);
+        audit.setCreatedBy(manager);
         audit = auditRepository.save(audit);
 
         nc = new NonConformity();

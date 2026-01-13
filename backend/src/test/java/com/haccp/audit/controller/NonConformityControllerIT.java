@@ -60,6 +60,9 @@ class NonConformityControllerIT {
     @Autowired
     private NonConformityRepository ncRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private Audit audit;
     private ChecklistItem item;
 
@@ -68,6 +71,12 @@ class NonConformityControllerIT {
         Facility facility = new Facility();
         facility.setName("Test Facility");
         facility = facilityRepository.save(facility);
+
+        User auditor = new User();
+        auditor.setUsername("auditor");
+        auditor.setPasswordHash("password");
+        auditor.setFullName("Test Auditor");
+        auditor = userRepository.save(auditor);
 
         ChecklistTemplate template = new ChecklistTemplate();
         template.setName("Test Template");
@@ -85,6 +94,7 @@ class NonConformityControllerIT {
         audit.setFacility(facility);
         audit.setAuditDate(LocalDate.now());
         audit.setStatus(Audit.AuditStatus.IN_PROGRESS);
+        audit.setCreatedBy(auditor);
         audit = auditRepository.save(audit);
     }
 

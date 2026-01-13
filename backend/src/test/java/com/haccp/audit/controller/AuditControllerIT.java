@@ -3,9 +3,11 @@ package com.haccp.audit.controller;
 import com.haccp.audit.entity.Audit;
 import com.haccp.audit.entity.AuditResponse;
 import com.haccp.audit.entity.Facility;
+import com.haccp.audit.entity.User;
 import com.haccp.audit.repository.AuditRepository;
 import com.haccp.audit.repository.AuditResponseRepository;
 import com.haccp.audit.repository.FacilityRepository;
+import com.haccp.audit.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,13 +60,23 @@ class AuditControllerIT {
     @Autowired
     private AuditResponseRepository responseRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private Facility facility;
+    private User auditor;
 
     @BeforeEach
     void setUp() {
         facility = new Facility();
         facility.setName("Test Facility");
         facility = facilityRepository.save(facility);
+
+        auditor = new User();
+        auditor.setUsername("auditor");
+        auditor.setPasswordHash("password");
+        auditor.setFullName("Test Auditor");
+        auditor = userRepository.save(auditor);
     }
 
     @Test
@@ -84,6 +96,7 @@ class AuditControllerIT {
         audit.setFacility(facility);
         audit.setAuditDate(LocalDate.now());
         audit.setStatus(Audit.AuditStatus.IN_PROGRESS);
+        audit.setCreatedBy(auditor);
         audit = auditRepository.save(audit);
 
         mockMvc.perform(post("/auditor/audits/" + audit.getId() + "/responses")

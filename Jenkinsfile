@@ -123,7 +123,9 @@ pipeline {
 
     post {
         always {
-            sh 'docker compose down -v || true'
+                        // Jenkins'in kendisini kapatmaması için sadece test servislerini durduruyoruz
+            sh 'docker compose stop backend db chrome selenium || true'
+            sh 'docker compose rm -f -v backend db chrome selenium || true'
         }
     }
 }

@@ -16,8 +16,6 @@ services:
       - DOCKER_HOST=unix:///var/run/docker.sock
       - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
       - TESTCONTAINERS_RYUK_DISABLED=true
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   db:
     image: postgres:16
